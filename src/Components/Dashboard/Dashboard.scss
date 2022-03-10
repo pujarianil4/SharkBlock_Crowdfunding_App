@@ -1,0 +1,10 @@
+.dashboard_container{
+    display: flex;
+    .sidebar{
+       height: 100vh;
+    }
+    .dash_cam_container{
+     padding: 10px 20px;
+        width: 100%;
+    }
+}
