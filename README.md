@@ -5,7 +5,6 @@ This is web3 based crowdfunding app for the startup to raise funds against their
 
 ## Demo
 
-Insert gif or link to demo
 
 
 ## Run Locally
