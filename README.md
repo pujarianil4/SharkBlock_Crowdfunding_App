@@ -1,70 +1,102 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# SharkBlock
 
-## Available Scripts
+This is web3 based crowdfunding app for the startup to raise funds against their product.
 
-In the project directory, you can run:
+## Demo
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Run Locally
 
-### `npm test`
+Clone the project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+  git clone https://github.com/pujarianil4/SharkBlock_Crowdfunding_App.git
+```
 
-### `npm run build`
+Go to the project directory
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+  cd SharkBlock_Crowdfunding_App
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Install dependencies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+  npm install
+```
 
-### `npm run eject`
+Start the server
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+  npm run start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Tech Stack
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Client:** React , Sass
 
-## Learn More
+**Server:** Smart Contract (Solidity)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🛠 Skills
+ FrontEnd - Javascript, HTML, CSS, ReactJS, Web3
 
-### Code Splitting
+ Backend - Solidity, Blockchain Architecture, Hardhat
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+## Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+To run this project, you will need to add the following environment variables to your .env file
 
-### Making a Progressive Web App
+`FACTORY_CONTRACT_ADDRESS`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Library Used
 
-### Deployment
+[Antd](https://ant.design/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+[Ethers-js](https://docs.ethers.io/v5/)
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Features
+
+- Connect Wallet 
+- Create Campaign 
+- Fund Investment
+- Invest in any Unit of Ether
+- Close Campaign
+- Withdraw Funds from Campaign
+
+
+## Lessons Learned
+
+- How CrowFunding Applications actually works
+- How to work with Factory Contract
+
+
+## Browser Support
+
+- [Install Metamask Extension](https://metamask.io/)
+
+- [Get Free Test Ethers](https://faucets.chain.link/rinkeby)
+
+
+## Authors
+
+- [@anilpujari](https://www.linkedin.com/in/anil-pujari-644282112/)
+
+
+## Feedback
+
+If you have any feedback, please reach out to us at [@anilpujari](https://www.linkedin.com/in/anil-pujari-644282112/)
+
+
+## Support
+
+For support, email pujarianil4@gmail.com 
+
