@@ -17,7 +17,6 @@ import useAccount from "../../utils/useAccount";
 
 export default function Dashboard({ contract }) {
   const { Sider } = Layout;
-  // const { user, isAuthenticated } = useMoralis();
   const {isAuthenticated, account} = useAccount()
   const [allCampainAddr, setAllCampainAddr] = React.useState([]);
   const [allcampaigndetailsArray, setAllcampaigndetailsArray] = React.useState(

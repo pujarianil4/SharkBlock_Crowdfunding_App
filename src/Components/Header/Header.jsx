@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 import useAccount from "../../utils/useAccount";
 export default function Header() {
-  // const { authenticate, isAuthenticated, user, logout, authError } = useMoralis();
   const { handleConnect, isAuthenticated, account, handleLogout} = useAccount();
   const navigate = useNavigate();
 

@@ -1,6 +1,5 @@
 import React from "react";
 // import Progress from "../ProgressBar/Progress";
- import Moralis from "moralis";
 // import {Buffer} from 'buffer';
 import { ethers } from "ethers";
 import { HeartFilled } from "@ant-design/icons";
@@ -50,9 +49,6 @@ export default function LandingHeader() {
     message.loading("File is uploading..");
     setIsloading(true);
      try {
-      // const file1 = new Moralis.File(file.name , file);
-      // await file1.saveIPFS();
-      // const fileURL = file1.ipfs();
       const added = await client.add(file)
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
       console.log("fileURL", url);
