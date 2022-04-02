@@ -10,15 +10,15 @@ import {
 import "./Dashboard.scss";
 import { ethers } from "ethers";
 import { sharkblockABI } from "../../abi";
-import { useMoralis } from "react-moralis";
 import DashboardCard from "../CampaignCard/DashBoardCard";
 import Loader from './../loader/Loader';
-import Usefetch from "../../utils/Usefetch";
+import useAccount from "../../utils/useAccount";
 
 
 export default function Dashboard({ contract }) {
   const { Sider } = Layout;
-  const { user, isAuthenticated } = useMoralis();
+  // const { user, isAuthenticated } = useMoralis();
+  const {isAuthenticated, account} = useAccount()
   const [allCampainAddr, setAllCampainAddr] = React.useState([]);
   const [allcampaigndetailsArray, setAllcampaigndetailsArray] = React.useState(
     []
@@ -39,7 +39,7 @@ export default function Dashboard({ contract }) {
     if (isAuthenticated) {
       (async () => {
         const detailArray = [];
-        const userAddr = user.get("ethAddress");
+        const userAddr = account;
         for (const addr of allCampainAddr) {
         
             const sharkcontract = new ethers.Contract(
@@ -47,14 +47,16 @@ export default function Dashboard({ contract }) {
               sharkblockABI,
               provider
             );
-            let sharkblock = await sharkcontract.getCampaignDetails();
-            let owner = await sharkcontract.owner();
-            console.log("owner", owner, userAddr ,String(owner).toLocaleLowerCase()===userAddr );
+            // let sharkblock = await sharkcontract.getCampaignDetails();
+            // let owner = await sharkcontract.owner();
+            // let images = await sharkcontract.getImages();
+            // let _balance = await sharkcontract.getMyCampaignFund();
+            // let transaction = await sharkcontract.getTransactions();
+            // let status = await sharkcontract.status();
+            let [sharkblock, owner, images, _balance, transaction, status] = await Promise.all([sharkcontract.getCampaignDetails(),sharkcontract.owner(),  sharkcontract.getImages(), sharkcontract.getMyCampaignFund(), sharkcontract.getTransactions(), sharkcontract.status()]);
+            console.log(String(owner).toLocaleLowerCase(), userAddr, String(owner).toLocaleLowerCase() === userAddr);
             if (String(owner).toLocaleLowerCase() === userAddr) {
-            let images = await sharkcontract.getImages();
-            let _balance = await sharkcontract.getMyCampaignFund();
-            let transaction = await sharkcontract.getTransactions();
-            let status = await sharkcontract.status();
+            
             let obj = {
               ...sharkblock,
               images: images,
@@ -66,6 +68,8 @@ export default function Dashboard({ contract }) {
             };
             console.log("obj", obj);
             detailArray.push(obj);
+          } else {
+            
           }
         }
         setAllcampaigndetailsArray(detailArray);

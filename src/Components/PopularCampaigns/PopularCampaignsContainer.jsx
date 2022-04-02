@@ -34,24 +34,25 @@ export default function PopularCampaignsContainer({contract}) {
         sharkblockABI,
         provider
       );
-       console.log("sharkblock", sharkcontract);
-        let sharkblock = await sharkcontract.getCampaignDetails();
-        let images = await sharkcontract.getImages();
-        let _balance = await sharkcontract.getMyCampaignFund();
-        let transaction = await sharkcontract.getTransactions();
-        let status = await sharkcontract.status();
+        // let sharkblock = await sharkcontract.getCampaignDetails();
+        // let images = await sharkcontract.getImages();
+        // let _balance = await sharkcontract.getMyCampaignFund();
+        // let transaction = await sharkcontract.getTransactions();
+        // let status = await sharkcontract.status();
+      
+        let all = await Promise.all([sharkcontract.getCampaignDetails(), sharkcontract.getImages(), sharkcontract.getMyCampaignFund(), sharkcontract.getTransactions(), sharkcontract.status()]);
+      
          let obj = {
-           ...sharkblock,
-           images: images,
-           pledged: _balance,
-           transaction,
-           status,
+           ...all[0],
+           images: all[1],
+           pledged: all[2],
+           transaction: all[3],
+           status: all[4],
            address: sharkcontract.address
          }
         detailArray.push(obj);
       
      }
-     console.log("detailArray", detailArray);
      setAllcampaigndetailsArray(detailArray);
      setloading(false);
       })()

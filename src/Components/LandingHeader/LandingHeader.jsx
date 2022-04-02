@@ -1,21 +1,21 @@
 import React from "react";
 // import Progress from "../ProgressBar/Progress";
-import { useMoralisFile, useMoralis } from 'react-moralis'
  import Moralis from "moralis";
 // import {Buffer} from 'buffer';
 import { ethers } from "ethers";
-import { HeartFilled, InboxOutlined } from "@ant-design/icons";
-import { Modal, Input, Upload, message } from 'antd';
+import { HeartFilled } from "@ant-design/icons";
+import { Modal, Input, message } from 'antd';
 import "./landingheader.scss";
 import Button from "../Button/Button";
 import robot from "../../assets/images/robot.png";
 import Header from "./../Header/Header";
 import AntdProgress from './../ProgressBar/AntdProgress';
-import Usefetch from "../../utils/Usefetch";
 import dateinSec from "../../utils/dateinSec";
+import { factoryABI } from './../../abi';
+import useAccount from "../../utils/useAccount";
+import { create } from 'ipfs-http-client'
 
-
-
+const client = create('https://ipfs.infura.io:5001/api/v0')
 
 export default function LandingHeader() {
   const [isModelvisible, setIsModelVisible ] = React.useState(false); 
@@ -32,9 +32,9 @@ export default function LandingHeader() {
      startDate:"",
      endDate:""
    })
-  const { Dragger } = Upload;
-  const allfields = form.category && form.title && form.description && form.goal && form.startDate && form.endDate && uploaded;
-  const {user, isAuthenticated} = useMoralis()
+  const allfields = form.category && form.title && form.description && form.goal && form.startDate && form.endDate ;
+  const {account } = useAccount();
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   const handleInput =(e) => {
     const { name, value } = e.target;
@@ -43,7 +43,6 @@ export default function LandingHeader() {
       file: file,
       [name]: value
     }
-    //console.log("form", obj);
     setForm(obj)
   }
 
@@ -51,12 +50,15 @@ export default function LandingHeader() {
     message.loading("File is uploading..");
     setIsloading(true);
      try {
-      const file1 = new Moralis.File(file.name , file);
-      await file1.saveIPFS();
-      const fileURL = file1.ipfs();
+      // const file1 = new Moralis.File(file.name , file);
+      // await file1.saveIPFS();
+      // const fileURL = file1.ipfs();
+      const added = await client.add(file)
+      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      console.log("fileURL", url);
       message.success("File uploaded successfully");
       setFileuploaded(true);
-      setFileUrls([...fileUrls, fileURL]);
+      setFileUrls([...fileUrls, url]);
       setIsloading(false);
      } catch (error) {
         console.error(error);
@@ -65,43 +67,45 @@ export default function LandingHeader() {
      }
   }
 
-  const { data, fetch, isFetching, isLoading } = Usefetch({
-    functionName: "createCampaign",
-    params:{
-     _category: form.category,
-     _title: form.title,
-     _description: form.description,
-     _goal: ethers.utils.parseEther(`${form.goal || 0}`) ,
-     _startDate:dateinSec(new Date(form.startDate)),
-     _endDate: dateinSec(new Date(form.endDate)),
-     _images: fileUrls,
-     _owner: user? user.get('ethAddress'): '0x0'
-    }
-  });
+
+  const handleCreate = async () => {
+    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = await web3Provider.getSigner();
+    //const getGasprice = await signer.getGasPrice();
+ const contract = new ethers.Contract(
+      process.env.REACT_APP_FACTORY_CONTRACT_ADD,
+      factoryABI,
+      signer
+    );
+   const tx = await contract.createCampaign( form.category, form.title, form.description, ethers.utils.parseEther(`${form.goal || 0}`) , dateinSec(new Date(form.startDate)), dateinSec(new Date(form.endDate)), fileUrls, account? account: '0x0', {gasLimit: 1000000});
+   tx.wait();
+  }
 
   const handleModal =(bool) =>{
-    if(isAuthenticated){
+
+    if(localStorage.getItem("isAuthenticated")  == "true"){
       setIsModelVisible(bool);
     } else {
       message.error("Please login to create a campaign");
     }
-    
+  }
+
+  const handleSroll = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: "smooth"
+    });
   }
 
   const handleSubmit = async (e) =>{
-    fetch();
+    handleCreate();
     handleModal(false);
   };
  
-  React.useEffect(()=>{
- if(user){
-  console.log("user", user.get('ethAddress'), user);
- }
-   console.log("file", isFetching, isLoading, data);
-  },[isFetching, isLoading, data])
-
-
-
+  React.useEffect(() => {
+    setIsAuthenticated(localStorage.getItem("isAuthenticated"));
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [ localStorage.getItem("isAuthenticated") ]);
   return (
     <>
     <div className="landing_container">
@@ -121,6 +125,7 @@ export default function LandingHeader() {
           </div>
           <div className="buttons">
             <Button
+            onClick={handleSroll}
               style={{ backgroundColor: "#041d57" ,  height: '50px', width: '200px'}}
               icon={<HeartFilled />}
               
@@ -154,7 +159,8 @@ export default function LandingHeader() {
         <input type='file' required  onChange={(e)=> handleUpload(e.target.files[0])} />
         <span style={{color: '#4cc899'}}>{loading && "File is uploading.."}</span>
   
-  <Button  onClick={handleSubmit} disabled={!uploaded && !allfields}>SUBMIT</Button>
+  <Button  onClick={handleSubmit} disabled={!allfields}>SUBMIT</Button>
+   <span>Note : You can create campaign without images</span>
     </Modal>
     </>
   );

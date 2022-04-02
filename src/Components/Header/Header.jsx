@@ -1,39 +1,43 @@
 import React from "react";
-import { Tooltip, message, Popover } from "antd";
-import { useMoralis } from "react-moralis";
+import { Tooltip, Popover } from "antd";
 import Button from "../Button/Button";
-import { UnlockFilled, WalletFilled, UserOutlined } from "@ant-design/icons";
+import { WalletFilled, UserOutlined } from "@ant-design/icons";
 import logo from "../../assets/images/logo.jpg";
 import metamaskicon from "../../assets/images/metamask.webp";
 import "./Header.scss";
 import { useNavigate } from 'react-router-dom';
+
+import useAccount from "../../utils/useAccount";
 export default function Header() {
-  const { authenticate, isAuthenticated, user, logout } = useMoralis();
+  // const { authenticate, isAuthenticated, user, logout, authError } = useMoralis();
+  const { handleConnect, isAuthenticated, account, handleLogout} = useAccount();
   const navigate = useNavigate();
+
   const handleAuthentication = (action) => {
     if (action) {
-      authenticate({ signingMessage: "Authenticate" });
+      //authenticate({ signingMessage: "Authenticate" });
+      handleConnect();
     } else {
-      logout();
+      handleLogout();
       localStorage.setItem("isAuthenticated", false);
     }
   };
+
+
+ 
+
   const handleNavigate = () => {
     
     navigate(`/dashboard`);
  
   }
-  React.useEffect(() => {
-    if (isAuthenticated && localStorage.getItem("isAuthenticated") === false) {
-      message.success("You are logged in successfully");
-      localStorage.setItem("isAuthenticated", true);
-    }
-  }, [user, isAuthenticated]);
+ 
+ 
 
   const content = (
     <div>
       <p onClick={handleNavigate}>DASHBOARD</p>
-      <p onClick={() => handleAuthentication(false)}>LOG OUT</p>
+      <p onClick={() => handleLogout()}>LOG OUT</p>
     </div>
   );
 
@@ -45,8 +49,8 @@ export default function Header() {
         </div>
       </div>
       <div>
-        {isAuthenticated && user && (
-          <Tooltip title={user.get("ethAddress")}>
+        {isAuthenticated && account && (
+          <Tooltip title={account}>
             {" "}
             <Button
               style={{
@@ -69,7 +73,7 @@ export default function Header() {
           </Tooltip>
         )}
 
-        {isAuthenticated && user ? (
+        {isAuthenticated && account ? (
           <Popover content={content}>
             <UserOutlined
               size="large"
@@ -93,7 +97,7 @@ export default function Header() {
             icon={<WalletFilled style={{ color: "#4cc899" }} />}
             type="text"
           >
-            {isAuthenticated ? "DISCONNECT" : "CONNECT WALLET"}
+            {"CONNECT WALLET"}
           </Button>
         )}
       </div>

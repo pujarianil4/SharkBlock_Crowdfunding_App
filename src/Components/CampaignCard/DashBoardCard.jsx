@@ -1,47 +1,62 @@
 import React from "react";
 import "./DashBoardCard.scss";
-import { Avatar,message } from "antd";
-import {useWeb3ExecuteFunction} from 'react-moralis'
+import { message } from "antd";
 import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
-import { UserOutlined } from '@ant-design/icons';
-import Mug from "../../assets/images/mug.jpg";
 import { ethToInr } from "../../utils/unitconvert";
 import AntdProgress from "../ProgressBar/AntdProgress";
 import { inPercentage } from './../../utils/percent';
 import Button from "../Button/Button";
-import Usefetch from "../../utils/Usefetch";
 import { sharkblockABI } from "../../abi";
 
 export default function DashboardCard({data}) {
   const navigate = useNavigate();
-  const { data: onclosedata, fetch: onClose } = useWeb3ExecuteFunction({
-    abi: sharkblockABI,
-    contractAddress: data.address,
-    functionName: "closeCampaign",
-  });
-  const { data: onwithdrawdata, fetch: onwithdraw, isFetching, isLoading, error } = useWeb3ExecuteFunction({
-    abi: sharkblockABI,
-    contractAddress: data.address,
-    functionName: "tranferFromCampaign",
-  });
   const handleNavigate = () => {
-    if(data.status == '1'){
+    if(data.status == '0'){
     navigate(`/campaign/${data?.address}`);
     } else {
       message.info("Campaign is closed");
     }
   }
 
-   React.useEffect(()=>{
-console.log("withdraw", onwithdrawdata, isFetching, isLoading);
-console.error("error", error)
-   },[onwithdrawdata, isFetching, isLoading])
+  const handleWithdraw = async () => {
+    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = await web3Provider.getSigner();
+    //const getGasprice = await signer.getGasPrice();
+    const contract = new ethers.Contract(
+      data.address,
+      sharkblockABI,
+      signer
+    );
+   const tx = await contract.tranferFromCampaign({
+    gasLimit: 250000
+    });
+   tx.wait();
+  }
+
+  const handleClose = async () => {
+    if(data.status == '0') {
+    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = await web3Provider.getSigner();
+    //const getGasprice = await signer.getGasPrice();
+ const contract = new ethers.Contract(
+      data.address,
+      sharkblockABI,
+      signer
+    );
+   const tx = await contract.closeCampaign({
+    gasLimit: 250000
+    });
+   tx.wait();
+  } else {
+    message.info("Campaign is closed already !");
+  }
+}
 
   return (
     <div  className="dash_campaigncard_container">
       <div onClick={handleNavigate} className="img_container">
-        <img src={data?.images[0]} alt="" />
+        <img src={data?.images[0] || 'https://bafybeievw2qrhzyqbvag64neneiumyttimldwzfuredqkg6zpexyroysxu.ipfs.infura-ipfs.io/'} alt="" />
       </div>
       <div>
     <AntdProgress percent={data?.goal && inPercentage(ethers.utils.formatUnits(data?.pledged),ethers.utils.formatUnits(data?.goal)) || 0} />
@@ -69,8 +84,8 @@ console.error("error", error)
           </span>
         </div>
         <div className="created_by">
-        <Button style={{width: '120px', margin: '5px'}} onClick={onwithdraw}> WITHDRAW </Button>
-        <Button style={{width: '120px', margin: '5px 10px'}} onClick={onClose}> CLOSE </Button>
+        <Button style={{width: '120px', margin: '5px'}} onClick={handleWithdraw}> WITHDRAW </Button>
+        <Button style={{width: '120px', margin: '5px 10px'}} onClick={handleClose}> CLOSE </Button>
         </div>
       </div>
     </div>
