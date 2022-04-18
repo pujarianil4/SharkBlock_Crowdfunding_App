@@ -4,7 +4,7 @@
 This is web3 based crowdfunding app for the startup to raise funds against their product.
 
 ## Demo
-
+[Live Demo](https://sharkblock1.netlify.app/)
 
 
 ## Run Locally
